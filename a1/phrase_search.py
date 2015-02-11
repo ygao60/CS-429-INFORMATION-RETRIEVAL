@@ -106,7 +106,7 @@ def search(index, query):
     [0]
     """
     pass
-
+    pass
 
 def find_top_bigrams(terms, n):
     """
