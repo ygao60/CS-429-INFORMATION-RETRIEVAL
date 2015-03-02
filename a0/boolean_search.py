@@ -28,7 +28,7 @@ def tokenize(document):
     >>> tokenize("Hi there. What's going on?")
     ['hi', 'there', 'what', 's', 'going', 'on']
     """
-    pass
+    return re.findall('\w+', document.lower())
 
 
 def create_index(tokens):
@@ -45,7 +45,17 @@ def create_index(tokens):
     >>> index['c']
     [1]
     """
-    pass
+    dic={}
+    k=0
+    for i in tokens:
+        i=list(set(i))
+        for j in i:
+            if j in list(dic):
+                dic[j].append(k)
+            else:
+                dic[j]=[k]
+        k=k+1
+    return dic
 
 
 def intersect(list1, list2):
@@ -56,7 +66,20 @@ def intersect(list1, list2):
     >>> intersect([1, 2], [3, 4])
     []
     """
-    pass
+    list3=[]
+    i=0
+    j=0
+    while((i<len(list1)) and (j<len(list2))):
+		if list1[i]==list2[j]:
+			list3.append(list1[i])
+			i=i+1
+			j=j+1
+		elif list1[i]<list2[j]:
+			i=i+1
+		else:
+			j=j+1
+	
+    return list3
 
 
 def sort_by_num_postings(words, index):
@@ -66,7 +89,15 @@ def sort_by_num_postings(words, index):
     >>> sort_by_num_postings(['a', 'b', 'c'], {'a': [0, 1], 'b': [1, 2, 3], 'c': [4]})
     ['c', 'a', 'b']
     """
-    pass
+    l=[]
+    count=0
+    for i in words:
+		if i in list(index):
+		    l.append(len(index[i]))
+		else:
+			l.append(0)
+		count=count+1
+    return [x for y, x in sorted(zip(l, words))]
 
 
 def search(index, query):
@@ -78,7 +109,26 @@ def search(index, query):
     >>> search({'a': [0, 1], 'b': [1, 2, 3], 'c': [4]}, 'a b')
     [1]
     """
-    pass
+    querywords=tokenize(query)
+    querywords=list(set(querywords))
+    if len(querywords)==0:
+	    return []
+    querysort=sort_by_num_postings(querywords, index)
+    if querysort[0] not in list(index):
+	    return []
+    l=len(querysort)
+    if l==1:
+        return index[querysort[0]]
+    if l>=2:
+        try:
+            doc=intersect(index[querysort[0]], index[querysort[1]])
+            if l>2:
+                for i in range(2,l):
+                    doc = intersect(doc,index[querysort[i]])
+            
+            return doc
+        except KeyError:
+            return []
 
 
 def main():
