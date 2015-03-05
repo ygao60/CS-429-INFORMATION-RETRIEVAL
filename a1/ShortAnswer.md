@@ -39,8 +39,10 @@ distances between all preﬁxes as computed by the algorithm in Figure 3.5 in [M
   
   (2).  Zipf's Law: f=k/i
       The sum of all collection frequencies equals the total number of tokens:
-      (400,000,000 * 400)=k/1+k/2+k/3+...+k/(40,000,000)=(approximation) k * ln(40,000,000)=k * 17.5044 
-      =>  k=(400,000,000 * 400)/17.5044= 9.14*(10^9)
+      (400,000,000 * 400)=k/1+k/2+k/3+...+k/(40,000,000)
+                        =(approximation) k * ln(40,000,000)
+                        =k * 17.5044 
+                        =>   k=(400,000,000 * 400)/17.5044= 9.14*(10^9)
       
       The frequency of the least frequent term (i=40,000,000) is:
       f= k/i= 9.14*(10^9)/40,000,000= 228.5
