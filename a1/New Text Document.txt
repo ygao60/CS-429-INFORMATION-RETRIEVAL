@@ -1,1 +1,4 @@
 python **.py
+
+
+python -m doctest phras_search.py -v

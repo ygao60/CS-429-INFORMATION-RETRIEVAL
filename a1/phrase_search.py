@@ -34,7 +34,7 @@ def tokenize(document):
     >>> tokenize("Hi there. What's going on? first-class")
     ['hi', 'there', "what's", 'going', 'on', 'first-class']
     """
-    pass
+    return re.findall("\w+(?:[-']\w+)*",document.lower())
 
 
 def stem(tokens):
@@ -44,7 +44,10 @@ def stem(tokens):
     >>> stem(['did', 'does', 'do', "doesn't", 'splendid'])
     ['do', 'do', 'do', "doesn't", 'splendid']
     """
-    pass
+    for i in range(len(tokens)):
+		if tokens[i]=='did' or tokens[i]=='does':
+			tokens[i]='do'
+    return tokens
 
 
 def create_positional_index(tokens):
@@ -64,7 +67,27 @@ def create_positional_index(tokens):
     >>> index[('c')]
     [[1, 1]]
     """
-    pass
+    d=defaultdict(list)
+    docid=0
+    len={}
+    for doc in tokens:
+        for word in doc:
+            if word not in len.keys():
+                len[word]=0
+            
+    for doc in tokens:
+        pos=0
+        appear=[]
+        for word in doc:
+            if word not in appear:
+                d[word].append([docid, pos])
+                len[word]=len[word]+1
+                appear.append(word)
+            else:
+                d[word][len[word]-1].append(pos)
+            pos=pos+1
+        docid=docid+1
+    return d
 
 
 def phrase_intersect(list1, list2):
@@ -88,7 +111,38 @@ def phrase_intersect(list1, list2):
     >>> phrase_intersect([[1, 2]], [[1, 4]])
     []
     """
-    pass
+    i=0
+    j=0
+    list3=[]
+    len3=0
+    while i<len(list1) and j<len(list2):
+        if(list1[i][0]==list2[j][0]):
+            p1=1
+            p2=1
+            appear=False
+            docid=list1[i][0]
+            while p1<len(list1[i]) and p2<len(list2[j]):
+                if list2[j][p2]==list1[i][p1]+1:
+                    if appear==False:
+                        list3.append([docid, list2[j][p2]])
+                        len3=len3+1
+                        appear=True
+                    else:
+                        list3[len3-1].append(list2[j][p2])
+                    p1=p1+1
+                    p2=p2+1
+                elif list2[j][p2]<list1[i][p1]+1:
+                    p2=p2+1
+                else:
+                    p1=p1+1
+            i=i+1
+            j=j+1
+        elif (list1[i][0]<list2[j][0]):
+            i=i+1
+        else:
+            j=j+1
+    return list3
+    
 
 
 def search(index, query):
@@ -105,8 +159,26 @@ def search(index, query):
     >>> search({'a': [[0, 4], [1, 1]], 'b': [[0, 5], [1, 10]], 'c': [[0, 6], [1, 11]]}, 'a b')
     [0]
     """
-    pass
-    pass
+    term=stem(tokenize(query))
+    l=len(term)
+    for i in term:
+        if i not in index.keys():
+            doc=[]
+            break
+    else:
+        if l==1:
+                doc=index[term[0]]
+        else:
+            doc=phrase_intersect(index[term[0]],index[term[1]])
+            if l>2:
+                for i in range(2,l):
+                    doc=phrase_intersect(doc, index[term[i]])
+    docid=[]
+    if len(doc)>0:
+        for list in doc:
+            docid.append(list[0])
+    return docid
+        
 
 def find_top_bigrams(terms, n):
     """
@@ -119,7 +191,20 @@ def find_top_bigrams(terms, n):
     >>> find_top_bigrams([['a', 'b', 'c', 'd'], ['b', 'c', 'a', 'b', 'c']], 2)
     [('b c', 3), ('a b', 2)]
     """
-    pass
+    d={}
+    for i in terms:
+        l=len(i)
+        for j in range(l-1):
+            seq=" ".join([i[j], i[j+1]])
+            if seq in d.keys():
+                d[seq]=d[seq]+1
+            else:
+                d[seq]=1
+    list=d.items()
+    sort=sorted(list, key=lambda x:x[1], reverse=True)
+    return sort[:n]
+    
+    
 
 
 def main():
