@@ -213,7 +213,7 @@ class Index(object):
         """ DO NOT MODIFY.
         Read a file to a list of strings. You should not need to modify
         this. """
-        return [l.strip() for l in codecs.open(filename, 'rt', 'utf-8').readlines()]
+        return [l.strip() for l in codecs.open(filename, 'r', 'utf-8').readlines()]
  
         
 
