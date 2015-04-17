@@ -60,7 +60,6 @@ class KMeans(object):
     def compute_means(self):
         """ Compute the mean vectors for each cluster (storing the results in an
         instance variable)."""
-     
         del self.mean_vectors[:]
         for i in range(self.k):
             c=Counter()
@@ -83,8 +82,6 @@ class KMeans(object):
     def compute_clusters(self, documents):
         """ Assign each document to a cluster. (Results stored in an instance
         variable). """
-        
-            
         self.cluster_doc=defaultdict(list) 
         doc_id=0
         for doc in documents:
@@ -139,12 +136,11 @@ class KMeans(object):
             j=0
             while (j<n and k<len(top)):
                 if(len(top[k][0])>3):
-                    print top[k][0].keys()
+                    print (unicode(u" ".join(top[k][0].keys())).encode("utf-8"))
                     j+=1
                 k+=1
                 
-            
-
+                
 
 def prune_terms(docs, min_df=3):
     """ Remove terms that don't occur in at least min_df different
