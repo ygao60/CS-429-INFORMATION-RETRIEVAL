@@ -1,4 +1,5 @@
 """ Assignment 6: PageRank. """
+
 from collections import defaultdict
 import glob
 import urllib
