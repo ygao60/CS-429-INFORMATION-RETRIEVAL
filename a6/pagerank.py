@@ -38,7 +38,7 @@ def compute_pagerank(urls, inlinks, outlinks, b=.85, iters=20):
             sum=0
             for link in inlinks[u]:
                 sum+=1.0*rank[link]/len_outlinks[link]
-            rank[u]=1-b+1.0*b*sum
+            rank[u]=1.0-b+1.0*b*sum
     return rank
 
 
